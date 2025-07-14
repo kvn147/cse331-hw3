@@ -1,0 +1,24 @@
+BODY {
+  font-family: sans-serif;
+}
+
+H1 {
+  margin: 10px 0 10px 0;
+}
+
+H2 {
+  font-size: 1.17em;
+  margin: 10px 0 0 0;
+}
+
+BUTTON, SELECT {
+  margin: 15px 15px 0 0;
+}
+
+.update {
+  color: rgb(110 144 67);
+}
+
+.error {
+  color: rgb(159, 39, 39);
+}
