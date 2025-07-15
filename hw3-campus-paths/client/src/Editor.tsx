@@ -15,7 +15,7 @@ type EditorProps = {
   onEndPointChange: (endPoints?: [Building, Building]) => void;
 
   /** Called to save the path currently displayed on the map. */
-  onSavePathClick: (endPoints: [Building, Building]) => void;
+  onSavePathClick: (endPoints: [string, string]) => void;
 };
 
 type EditorState = {
@@ -110,7 +110,7 @@ export class Editor extends Component<EditorProps, EditorState> {
       const toBuildingObj: Building | undefined = this.props.buildings.find(b => b.shortName === toBuilding);
       
       if (fromBuildingObj && toBuildingObj) {
-        this.props.onSavePathClick([fromBuildingObj, toBuildingObj]);
+        this.props.onSavePathClick([String(fromBuildingObj), String(toBuildingObj)]);
       }
     }
   }
