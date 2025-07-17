@@ -73,7 +73,7 @@ export class Editor extends Component<EditorProps, EditorState> {
         <label htmlFor='savedPath'>(fill with saved path)</label>
         <select id='savedPath' value={String(savedPath)} onChange={this.doSavedPathChange}>
           <option value="">(choose a saved path)</option>
-          {this.renderBuildings()}
+          {this.renderSavedPaths()}
         </select>
       </div>
         <div>
@@ -99,6 +99,19 @@ export class Editor extends Component<EditorProps, EditorState> {
     }
     return elems;
   }
+
+  /** Renders saved path options for dropdown */
+  renderSavedPaths = (): JSX.Element[] => {
+    const elems: JSX.Element[] = [];
+    for (const path of this.props.savedPaths) {
+      elems.push(
+        <option value={String(this.props.savedPaths.indexOf(path))} key={String(this.props.savedPaths.indexOf(path))}>
+          {`${path[0].longName} to ${path[1].longName}`}
+        </option>
+      );
+    }
+    return elems;
+  };
 
   /** Handles save path button click */
   doSavePathClick = (): void => {
@@ -130,7 +143,6 @@ export class Editor extends Component<EditorProps, EditorState> {
     const fromBuildingShortName: string = event.target.value;
     this.setState({ fromBuilding: fromBuildingShortName });
 
-    // Only call onEndPointChange if both buildings are selected
     if (fromBuildingShortName && this.state.toBuilding) {
       const fromBuildingObj: Building | undefined = this.props.buildings.find(b => b.shortName === fromBuildingShortName);
       const toBuildingObj: Building | undefined = this.props.buildings.find(b => b.shortName === this.state.toBuilding);
@@ -145,8 +157,7 @@ export class Editor extends Component<EditorProps, EditorState> {
   doToBuildingChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     const toBuildingShortName: string = event.target.value;
     this.setState({ toBuilding: toBuildingShortName });
-    
-    // Only call onEndPointChange if both buildings are selected
+
     if (this.state.fromBuilding && toBuildingShortName) {
       const fromBuildingObj: Building | undefined = this.props.buildings.find(b => b.shortName === this.state.fromBuilding);
       const toBuildingObj: Building | undefined = this.props.buildings.find(b => b.shortName === toBuildingShortName);
@@ -170,7 +181,6 @@ export class Editor extends Component<EditorProps, EditorState> {
           fromBuilding: selectedPath[0].shortName,
           toBuilding: selectedPath[1].shortName
         });
-        // Call onEndPointChange since we now have both buildings selected
         this.props.onEndPointChange([selectedPath[0], selectedPath[1]]);
       }
     }

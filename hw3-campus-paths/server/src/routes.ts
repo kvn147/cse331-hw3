@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
-import { BUILDINGS, EDGES } from './campus';
+import { BUILDINGS, EDGES, Building } from './campus';
 import { shortestPath } from "./dijkstra";
 
 // Require type checking of request body.

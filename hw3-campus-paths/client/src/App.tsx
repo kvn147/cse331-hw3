@@ -26,19 +26,14 @@ export class App extends Component<AppProps, AppState> {
     super(props);
 
     // TODO (task 2): remove 'buildings: [...], savedPaths: [...]' from state
-    this.state = {
-      buildings: [{shortName: "INT", longName: "24-hr-internship", location: {x: 1500, y: 1500}},
-                  {shortName: "COF", longName: "Black Coffee Machine", location: {x: 2500, y: 2500}}],
-      savedPaths: [[{shortName: "INT", longName: "24-hr-internship", location: {x: 1500, y: 1500}},
-                  {shortName: "COF", longName: "Black Coffee Machine", location: {x: 2500, y: 2500}}]]
-    };
+    this.state = {};
   }
 
   componentDidMount = (): void => {
     // TODO (task 2): uncomment the fetch request below, and start debugging!
-    // fetch('/api/data')
-    //   .then(this.doAppDataResp)
-    //   .catch((ex) => this.doAppDataError(`failed to connect ${ex}`));
+    fetch('/api/appData')
+      .then(this.doAppDataResp)
+      .catch((ex) => this.doAppDataError(`failed to connect ${ex}`));
   }
 
   render = (): JSX.Element => {
@@ -100,17 +95,17 @@ export class App extends Component<AppProps, AppState> {
   };
 
   // Parses JSON data received from app data fetch.
-  doAppDataError = (data: unknown): void => {
+  doAppDataJson = (data: unknown): void => {
     if (!isRecord(data))
       throw new Error(`data is not a record: ${typeof data}`);
 
-    const buildings = parseBuildings(data);
-    const savedPaths = parseEndpointPairs(data);
+    const buildings = parseBuildings(data.buildings);
+    const savedPaths = parseEndpointPairs(data.savedPaths);
     this.setState({buildings: buildings, savedPaths: savedPaths});
   };
 
   // Presents error messages related to fetching app data
-  doAppDataJson = (msg: string): void => {
+  doAppDataError = (msg: string): void => {
     console.error(`fetch of app data failed. ${msg}`)
   };
 
