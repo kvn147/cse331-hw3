@@ -58,7 +58,22 @@ export const getShortestPath = (req: SafeRequest, res: SafeResponse): void => {
     endBuilding.location,
     EDGES
   );
-  res.json(path);
+
+  if (path === undefined) {
+    res.status(404).send("No path found between the buildings");
+    return;
+  }
+
+  const clientPath: Array<{start: {x: number, y: number}, end: {x: number, y: number}}> = [];
+  
+  for (const step of path.steps) {
+    clientPath.push({
+      start: step.start,
+      end: step.end
+    });
+  }
+
+  res.json(clientPath);
 }
 
 // TODO (task 5): add a route to get the shortest path

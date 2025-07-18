@@ -119,9 +119,50 @@ export class App extends Component<AppProps, AppState> {
       console.log(`Finding a path between "${start.longName}" and "${end.longName}"`);
       // TODO (task 4): fetch the shortest path and add helper functions to parse response
       fetch(`/api/shortestPath?start=${start.shortName}&end=${end.shortName}`)
-        .then()
-        .then(this.doEndPointChangeError);
+        .then(this.doShortestPathResp)
+        .catch((msg) => this.doEndPointChangeError(`Error fetching shortest path. ${msg}`));
     }
+  }
+
+  doShortestPathResp = (res: Response): void => {
+    if (res.status === 200) {
+      res.json()
+        .then(this.doShortestPathJson)
+        .catch((msg) => this.doEndPointChangeError(`Error parsing 200 response. ${msg}`));
+    } else {
+      this.doEndPointChangeError(`bad status code: ${res.status}`);
+    }
+  };
+
+  doShortestPathJson = (data: unknown): void => {
+    if (!Array.isArray(data)) {
+      throw new Error(`data is not an array: ${typeof data}`);
+    }
+    const path: Array<Edge> = [];
+    for (const edge of data) {
+      if (!isRecord(edge)) {
+        this.doEndPointChangeError(`edge is not a record: ${typeof edge}`);
+        return;
+      }
+      if (!isRecord(edge.start) || !isRecord(edge.end)) {
+        this.doEndPointChangeError(`edge start or end is not a record ${typeof edge.start} or ${typeof edge.end}`);
+        return;
+      }
+      if (typeof edge.start.x !== 'number' || typeof edge.start.y !== 'number' ||
+          typeof edge.end.x !== 'number' || typeof edge.end.y !== 'number') {
+        this.doEndPointChangeError(`edge coordinates are not numbers ${typeof edge.start.x}, ${typeof edge.start.y}, ${typeof edge.end.x}, ${typeof edge.end.y}`);
+        return;
+      }
+      
+      path.push({
+        start: {x: edge.start.x, y: edge.start.y},
+        end: {x: edge.end.x, y: edge.end.y}
+      });
+    }
+
+    this.setState({path: path});
+
+
   }
 
   doEndPointChangeError = (msg: string): void => {
