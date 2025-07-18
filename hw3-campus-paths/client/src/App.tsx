@@ -118,8 +118,15 @@ export class App extends Component<AppProps, AppState> {
       const [start, end] = endPoints;
       console.log(`Finding a path between "${start.longName}" and "${end.longName}"`);
       // TODO (task 4): fetch the shortest path and add helper functions to parse response
-
+      fetch(`/api/shortestPath?start=${start.shortName}&end=${end.shortName}`)
+        .then()
+        .then(this.doEndPointChangeError);
     }
+  }
+
+  doEndPointChangeError = (msg: string): void => {
+    console.error(`fetch of shortest path failed. ${msg}`);
+    this.setState({endPoints: undefined, path: undefined});
   };
 
 

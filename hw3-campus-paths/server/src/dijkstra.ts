@@ -43,10 +43,16 @@ const exploreChildren = (active: PriorityQueue<Path>, finished: Set<string>, pat
       const childKey = toKey(edge.end);
       if (!finished.has(childKey)) {
         // put our new edge into the path since we are not finished
-        path.steps.push(edge);
+        // path.steps.push(edge);
+        const newSteps = [];
+        for (const step of path.steps) {
+          newSteps.push(step);
+        }
+        newSteps.push(edge);
+
         active.add({
             start: path.start, end: edge.end,
-            steps: path.steps, dist: path.dist + edge.dist
+            steps: newSteps, dist: path.dist + edge.dist
           });
       }
     }
@@ -60,7 +66,7 @@ const exploreChildren = (active: PriorityQueue<Path>, finished: Set<string>, pat
  * shortestPath may not work!)
  */
 export const shortestPath = (
-    _start: Location, end: Location, edges: Array<Edge>): Path | undefined => {
+    start: Location, end: Location, edges: Array<Edge>): Path | undefined => {
 
   // Create a map of locations and outgoing edges
   const graph = initGraph(edges);
@@ -71,8 +77,13 @@ export const shortestPath = (
   // Queue of paths outgoing from not yet explored nodes
   const active = newPriorityQueue(comparePaths);
 
-  // Continue to explore while we have paths remaining.
-  while (!active.first()) {
+  active.add({
+    start: start, end: start,
+    steps: [], dist: 0
+  });  // start with the starting location
+
+  // Continue to explore whiles we have paths remaining.
+  while (active.first()) {
     // get highest priority item from queue of active paths
     const path = active.removeFirst();
     if (sameLocation(path.end, end))

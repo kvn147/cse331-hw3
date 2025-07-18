@@ -31,13 +31,33 @@ export const getAppData = (_req: SafeRequest, res: SafeResponse): void => {
  */
 export const getShortestPath = (req: SafeRequest, res: SafeResponse): void => {
   // TODO (task 4): finish implementing this route to get the shortest path
-  console.log(`log to quiet warning about unused variables: ${req} & ${res}. remove!`);
+  // console.log(`log to quiet warning about unused variables: ${req} & ${res}. remove!`);
+  const start = first(req.query.start);
+  const end = first(req.query.end);
+
+  if (start === undefined || end === undefined) {
+    res.status(400).send("Missing start or end location");
+    return;
+  }
 
   // Change these values manually to test them
-  const loc1 = {x: 2259.7112, y: 1715.5273};
-  const loc2 = {x: 1895.8038, y: 1325.861};
+  // const loc1 = {x: 2259.7112, y: 1715.5273};
+  // const loc2 = {x: 1895.8038, y: 1325.861};
 
-  const path = shortestPath(loc1, loc2, EDGES);
+  // const path = shortestPath(loc1, loc2, EDGES);
+  const startBuilding = BUILDINGS.find(b => b.shortName === start);
+  const endBuilding = BUILDINGS.find(b => b.shortName === end);
+  
+  if (!startBuilding || !endBuilding) {
+    res.status(404).send("One or both buildings not found");
+    return;
+  }
+  
+  const path = shortestPath(
+    startBuilding.location,
+    endBuilding.location,
+    EDGES
+  );
   res.json(path);
 }
 
