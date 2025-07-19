@@ -77,7 +77,23 @@ export const getShortestPath = (req: SafeRequest, res: SafeResponse): void => {
 }
 
 // TODO (task 5): add a route to get the shortest path
-
+const savedPath = (req: SafeRequest, res: SafeResponse): void => {
+  const body = req.body;
+  if (!Array.isArray(body) || body.length !== 2) {
+    res.status(400).send("Invalid path format");
+    return;
+  }
+  const fromBuilding = body[0];
+  const toBuilding = body[1];
+  const fromBuildingObj = BUILDINGS.find(b => b.shortName === fromBuilding);
+  const toBuildingObj = BUILDINGS.find(b => b.shortName === toBuilding);
+  if (!fromBuildingObj || !toBuildingObj) {
+    res.status(404).send("One or both buildings not found");
+    return;
+  }
+  savedPaths.push([fromBuildingObj, toBuildingObj]);
+  res.status(201).send("Path saved successfully");
+};
 
 // Helper to return the (first) value of the parameter if any was given.
 // (This is mildly annoying because the client can also give multiple values,

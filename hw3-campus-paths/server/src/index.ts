@@ -18,3 +18,5 @@ app.get("/api/appData", getAppData);
 app.get("/api/shortestPath", getShortestPath);
 // TODO (Task 5): Add a route for saving your paths!
 app.listen(port, () => console.log(`Server listening on ${port}`));
+app.post("/api/savePath", savedPath);
+

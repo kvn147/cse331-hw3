@@ -175,6 +175,32 @@ export class App extends Component<AppProps, AppState> {
   doSavePathClick = (endPoints: [string, string]): void => {
     const [start, end] = endPoints;
     // TODO (task 5): save path on server and add helper functions to parse response
-    console.log(`Saving path between "${start}" and "${end}"`);
+    fetch('/api/savePath', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify([start, end])
+    })
+      .then((res) => this.doSavePathResp(res, start, end))
+      .catch((msg) => this.doSavePathError(`Error saving path. ${msg}`));
   }
+
+  // Handles the response from saving a path
+  doSavePathResp = (res: Response, start: string, end: string): void => {
+    if (res.status === 200) {
+      console.log(`Path from "${start}" to "${end}" saved successfully`);
+      // Refresh the saved paths list
+      fetch('/api/appData')
+        .then(this.doAppDataResp)
+        .catch((ex) => this.doAppDataError(`failed to connect ${ex}`));
+    } else {
+      this.doSavePathError(`bad status code: ${res.status}`);
+    }
+  };
+
+  // Handles errors from saving a path
+  doSavePathError = (msg: string): void => {
+    console.error(`Failed to save path. ${msg}`);
+  };
 }
