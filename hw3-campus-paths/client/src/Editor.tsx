@@ -106,7 +106,7 @@ export class Editor extends Component<EditorProps, EditorState> {
     for (const path of this.props.savedPaths) {
       elems.push(
         <option value={String(this.props.savedPaths.indexOf(path))} key={String(this.props.savedPaths.indexOf(path))}>
-          {`${path[0].longName} to ${path[1].longName}`}
+          {`${path[0].shortName} -> ${path[1].shortName}`}
         </option>
       );
     }
@@ -123,7 +123,7 @@ export class Editor extends Component<EditorProps, EditorState> {
       const toBuildingObj: Building | undefined = this.props.buildings.find(b => b.shortName === toBuilding);
       
       if (fromBuildingObj && toBuildingObj) {
-        this.props.onSavePathClick([String(fromBuildingObj), String(toBuildingObj)]);
+        this.props.onSavePathClick([fromBuildingObj.shortName, toBuildingObj.shortName]);
       }
     }
   }

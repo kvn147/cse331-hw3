@@ -77,22 +77,31 @@ export const getShortestPath = (req: SafeRequest, res: SafeResponse): void => {
 }
 
 // TODO (task 5): add a route to get the shortest path
-const savedPath = (req: SafeRequest, res: SafeResponse): void => {
-  const body = req.body;
-  if (!Array.isArray(body) || body.length !== 2) {
-    res.status(400).send("Invalid path format");
+/**
+ * 
+ * @param req Request object.
+ * @param res Response object.
+ * @returns saved path.
+ */
+export const savePath = (req: SafeRequest, res: SafeResponse): void => {
+  const start = req.body.start;
+  const end = req.body.end;
+  
+  if (typeof start !== 'string' || typeof end !== 'string') {
+    res.status(400).send("Invalid start or end building");
     return;
   }
-  const fromBuilding = body[0];
-  const toBuilding = body[1];
-  const fromBuildingObj = BUILDINGS.find(b => b.shortName === fromBuilding);
-  const toBuildingObj = BUILDINGS.find(b => b.shortName === toBuilding);
-  if (!fromBuildingObj || !toBuildingObj) {
+  
+  const startBuilding = BUILDINGS.find(b => b.shortName === start);
+  const endBuilding = BUILDINGS.find(b => b.shortName === end);
+  
+  if (!startBuilding || !endBuilding) {
     res.status(404).send("One or both buildings not found");
     return;
   }
-  savedPaths.push([fromBuildingObj, toBuildingObj]);
-  res.status(201).send("Path saved successfully");
+  
+  savedPaths.push([startBuilding, endBuilding]);
+  res.status(200).send("Path saved successfully");
 };
 
 // Helper to return the (first) value of the parameter if any was given.

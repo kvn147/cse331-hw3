@@ -180,7 +180,7 @@ export class App extends Component<AppProps, AppState> {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify([start, end])
+      body: JSON.stringify({start: start, end: end})
     })
       .then((res) => this.doSavePathResp(res, start, end))
       .catch((msg) => this.doSavePathError(`Error saving path. ${msg}`));
